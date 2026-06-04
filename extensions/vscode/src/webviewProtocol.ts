@@ -51,7 +51,24 @@ export class VsCodeWebviewProtocol
     this._webviewListener?.dispose();
 
     const handleMessage = async (msg: Message): Promise<void> => {
-      if (!("messageType" in msg) || !("messageId" in msg)) {
+      // Guard: ignore malformed messages instead of crashing
+      if (
+        !msg ||
+        typeof msg !== "object" ||
+        !("messageType" in msg) ||
+        !("messageId" in msg)
+      ) {
+        console.warn(
+          "[Continue] Ignoring malformed webview message:",
+          msg
+        );
+        return;
+      }  
+      
+      console.log("[Continue] handleMessage received:", msg);
+
+      // disabling the old hard-core guard
+      if (false && !("messageType" in msg) || !("messageId" in msg)) {
         throw new Error(`Invalid webview protocol msg: ${JSON.stringify(msg)}`);
       }
 

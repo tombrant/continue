@@ -195,8 +195,24 @@ class OpenAI extends BaseLLM {
 
   constructor(options: LLMOptions) {
     super(options);
-    this.useLegacyCompletionsEndpoint = options.useLegacyCompletionsEndpoint;
-    this.apiVersion = options.apiVersion ?? "2023-07-01-preview";
+
+    // Force Azure routing
+    this.apiType = "azure";
+    this.deployment = options.deployment;
+    this.apiVersion = options.apiVersion ?? "2024-10-21";
+    this.useLegacyCompletionsEndpoint = options.useLegacyCompletionsEndpoint;  
+
+    console.log("[Continue] Azure LLM initialized:", {
+      apiType: this.apiType,
+      deployment: this.deployment,
+      apiVersion: this.apiVersion,
+      apiBase: this.apiBase,
+    });
+
+    if (false) {
+      this.useLegacyCompletionsEndpoint = options.useLegacyCompletionsEndpoint;
+      this.apiVersion = options.apiVersion ?? "2023-07-01-preview";
+    }
   }
 
   static providerName = "openai";
@@ -404,6 +420,16 @@ class OpenAI extends BaseLLM {
       );
     }
 
+    if (this.apiType === "azure") {
+      const path = `openai/deployments/${this.deployment}/${endpoint}`;
+      const version = `?api-version=${this.apiVersion}`;
+
+      console.log("[Continue] Azure endpoint:", `${path}${version}`);
+
+      return new URL(`${path}${version}`, this.apiBase);
+    }
+
+
     if (this.apiType?.includes("azure")) {
       // Default is `azure-openai`, but previously was `azure`
       const isAzureOpenAI =
@@ -538,6 +564,25 @@ class OpenAI extends BaseLLM {
     }
 
     const body = this._convertArgs(options, messages);
+
+    body.apiType = "azure";
+    body.apiVersion = this.apiVersion;
+
+    // Log a safe digest of the request body
+    try {
+      const json = JSON.stringify(body);
+      const head = json.slice(0, 500);
+      const tail = json.slice(-500);
+      console.log("[Continue] Azure request body digest:", {
+        length: json.length,
+        head,
+        tail,
+        note: "middle omitted for brevity"
+      });
+    } catch (e) {
+      console.warn("[Continue] Failed to stringify request body:", e);
+    }
+
 
     const response = await this.fetch(this._getEndpoint("chat/completions"), {
       method: "POST",
