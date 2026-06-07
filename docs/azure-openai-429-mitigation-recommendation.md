@@ -152,12 +152,23 @@ Recommended preservation priorities:
 
 <Card title="Suggested Defaults" icon="gauge">
 
+<<<<<<< Updated upstream
+Use these values as a starting point:
+
+- `payloadMaxBytes`: `200000`
+- `pruneTargetRatio`: `0.8`
+- `retryPruneTargetRatio`: `0.65`
+- retry count for `429`: `1`
+- # retry strategy: exponential backoff with jitter
+
   Use these values as a starting point:
-  - `payloadMaxBytes`: `200000`
-  - `pruneTargetRatio`: `0.8`
-  - `retryPruneTargetRatio`: `0.65`
-  - retry count for `429`: `1`
-  - retry strategy: exponential backoff with jitter
+
+- `payloadMaxBytes`: `200000`
+- `pruneTargetRatio`: `0.8`
+- `retryPruneTargetRatio`: `0.65`
+- retry count for `429`: `1`
+- retry strategy: exponential backoff with jitter
+  > > > > > > > Stashed changes
 
 </Card>
 
@@ -253,11 +264,21 @@ This approach is more robust than either of these simpler strategies alone:
 
 <Info>
 
+<<<<<<< Updated upstream
+Azure OpenAI `429` responses can happen for more than one reason:
+
+- defined TPM/RPM limits may be exceeded
+- the service may be scaling to demand and temporarily unable to serve the request
+- large `max_tokens` or `best_of` settings can increase rate-limit pressure
+- # retry with backoff is recommended by Azure guidance
+
   Azure OpenAI `429` responses can happen for more than one reason:
-  - defined TPM/RPM limits may be exceeded
-  - the service may be scaling to demand and temporarily unable to serve the request
-  - large `max_tokens` or `best_of` settings can increase rate-limit pressure
-  - retry with backoff is recommended by Azure guidance
+
+- defined TPM/RPM limits may be exceeded
+- the service may be scaling to demand and temporarily unable to serve the request
+- large `max_tokens` or `best_of` settings can increase rate-limit pressure
+- retry with backoff is recommended by Azure guidance
+  > > > > > > > Stashed changes
 
 </Info>
 
@@ -269,4 +290,7 @@ This approach is more robust than either of these simpler strategies alone:
 - Rebuild requests with stricter pruning on retry
 - Audit and lower high output-token defaults where possible
 - Add request concurrency controls for Azure deployments
+  <<<<<<< Updated upstream
+- # Add request cost telemetry for bytes and estimated tokens
 - Add request cost telemetry for bytes and estimated tokens
+  > > > > > > > Stashed changes
