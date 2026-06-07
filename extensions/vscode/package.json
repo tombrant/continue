@@ -655,8 +655,10 @@
     ]
   },
   "scripts": {
+    "build:local": "esbuild src/extension.ts --bundle --platform=node --external:vscode --external:core/* --external:system-ca --external:@sentry/node --external:uuid --external:svg-builder --external:node-fetch --external:comment-json --external:monaco-vscode-textmate-theme-converter/* --external:systeminformation --external:minisearch --external:node-machine-id --external:../../packages/config-yaml/dist --external:lru-cache --external:@continuedev/fetch --outfile=out/extension.js --tsconfig=../../tsconfig.build.json",
+    "package:local": "npm run build:local && vsce package --no-dependencies",
     "esbuild-base": "node scripts/esbuild.js",
-    "vscode:prepublish": "npm run esbuild-base -- --minify",
+    "vscode:prepublish": "echo \"Skipping prepublish for local build\"",
     "esbuild": "npm run esbuild-base -- --sourcemap",
     "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
     "esbuild-notify": "npm run esbuild-base -- --sourcemap --notify",
